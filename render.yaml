@@ -2,8 +2,11 @@ services:
   # 1. Base de datos (Servicio Privado)
   - type: pserv
     name: db
-    env: docker
-    image: mariadb:11
+    env: image
+    image:
+      url: mariadb:11
+    disk:
+      name: db_data
     disk:
       name: db_data
       mountPath: /var/lib/mysql
