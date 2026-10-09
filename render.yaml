@@ -1,0 +1,47 @@
+services:
+  # 1. Base de datos (Servicio Privado)
+  - type: pserv
+    name: db
+    env: docker
+    image: mariadb:11
+    disk:
+      name: db_data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MARIADB_DATABASE
+        value: tienda
+      - key: MARIADB_USER
+        value: wpuser
+      - key: MARIADB_PASSWORD
+        value: wp-clase-2026
+      - key: MARIADB_ROOT_PASSWORD
+        value: root-clase-2026
+
+  # 2. WordPress (Servicio Web)
+  - type: web
+    name: wordpress
+    env: docker
+    disk:
+      name: wp_data
+      mountPath: /var/www/html
+      sizeGB: 1
+    envVars:
+      - key: WORDPRESS_DB_HOST
+        value: db
+      - key: WORDPRESS_DB_NAME
+        value: tienda
+      - key: WORDPRESS_DB_USER
+        value: wpuser
+      - key: WORDPRESS_DB_PASSWORD
+        value: wp-clase-2026
+      - key: WORDPRESS_TABLE_PREFIX
+        value: wp_
+      - key: WORDPRESS_CONFIG_EXTRA
+        value: |
+          if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') { $_SERVER['HTTPS'] = 'on'; }
+          if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) { $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST']; }
+          $esquema = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+          define('WP_HOME', $esquema . '://' . $_SERVER['HTTP_HOST']);
+          define('WP_SITEURL', $esquema . '://' . $_SERVER['HTTP_HOST']);
+          define('WP_MEMORY_LIMIT', '256M');
