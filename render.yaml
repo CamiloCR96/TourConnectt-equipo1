@@ -7,8 +7,6 @@ services:
       url: mariadb:11
     disk:
       name: db_data
-    disk:
-      name: db_data
       mountPath: /var/lib/mysql
       sizeGB: 1
     envVars:
