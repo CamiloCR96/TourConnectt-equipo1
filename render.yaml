@@ -7,7 +7,6 @@ services:
       url: mariadb:11
     envVars:
       - key: MARIADB_DATABASE
-      - key: MARIADB_DATABASE
         value: tienda
       - key: MARIADB_USER
         value: wpuser
